@@ -161,6 +161,28 @@ while True:
     opcaoMenu1 = int(input("Introduza uma opção: "))
 
     if opcaoMenu1 == 1:
+        
+        infoJogadores = []
+
+        for i in range(0, numEquipas):
+            infoJogadores.append([])
+            for j in range(0, max(numJogadoresEquipa) + 1):
+                infoJogadores[i].append(0)
+
+        for i in range(0, numEquipas):
+            if (i == 0):
+                aux = 0
+            else:
+                aux += numJogadoresEquipa[i - 1]
+            
+            for j in range(0, max(numJogadoresEquipa) + 1):
+                if (j == 0):
+                    infoJogadores[i][j] = equipas[i]
+                else:
+                    if ((j - 1) < numJogadoresEquipa[i]):
+                        infoJogadores[i][j] = jogadores[(j - 1) + aux]               
+
+        print(tabulate(infoJogadores, tablefmt="grid"))
 
         print(equipas)
         equipaGerir = int(input("Introduza qual o número da equipa que quer editar: "))
@@ -170,7 +192,13 @@ while True:
         print(" 2 -> Remover jogador")
         opcaoMenu2 = int(input("Introduza uma opção: "))
 
-        print(jogadores)
+        infoJogadoresEquipa = [[]]
+        
+        for i in range(0, len(jogadores)):
+            infoJogadoresEquipa[0].append(jogadores[i])
+
+        print(tabulate(infoJogadoresEquipa, tablefmt="grid"))
+
         if opcaoMenu2 == 1:
             addJogador()
         elif opcaoMenu2 == 2:
