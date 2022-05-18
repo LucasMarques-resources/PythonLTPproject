@@ -20,6 +20,14 @@ equipaVencedora = " "
 maxValuePos = 0
 pontos = []
 
+def printJogadores():
+    infoJogadoresEquipa = [[]]
+
+    for i in range(0, len(jogadores)):
+        infoJogadoresEquipa[0].append(jogadores[i])
+
+    print(tabulate(infoJogadoresEquipa, tablefmt="grid"))
+
 def writeInFile():
     ficheiro = open(file_path, "w")
 
@@ -62,7 +70,12 @@ def addJogador():
             numJogadoresEquipa[equipaGerir - 1] += 1
 
 def removeJogador():
-    jogadorGerir = str(input("Qual o nome do jogador que deseja remover: "))
+    while True:
+        jogadorGerir = str(input("Qual o nome do jogador que deseja remover: "))
+        if (jogadores.count(jogadorGerir) >= 1):
+            break
+        else:
+            print("Introduza um nome válido!")
 
     numMax = 0
     numMin = 0
@@ -83,7 +96,6 @@ def removeJogador():
                 print(f"Esse jogador nao esta na equipa {equipaGerir}")
 
         numMin += numJogadoresEquipa[i]
-
 
 file_path = "jogadores.txt"
 
@@ -192,19 +204,14 @@ while True:
         print(" 2 -> Remover jogador")
         opcaoMenu2 = int(input("Introduza uma opção: "))
 
-        infoJogadoresEquipa = [[]]
-        
-        for i in range(0, len(jogadores)):
-            infoJogadoresEquipa[0].append(jogadores[i])
-
-        print(tabulate(infoJogadoresEquipa, tablefmt="grid"))
-
         if opcaoMenu2 == 1:
             addJogador()
         elif opcaoMenu2 == 2:
             removeJogador()
 
         writeInFile()
+
+        printJogadores()
     
     elif opcaoMenu1 == 2:
 

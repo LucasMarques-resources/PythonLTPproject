@@ -1,4 +1,4 @@
 4
-2 3 2 1
-Benfica Porto Sporting NewTeam
-syd syd2 syd3 syd4 syd5 syd6 syd7 syd8
+2 3 2 2 
+Benfica Porto Sporting NewTeam 
+syd syd2 syd3 syd4 syd5 syd6 syd7 syd8 JogADD 
