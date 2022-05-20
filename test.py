@@ -1,7 +1,7 @@
-from colorama import init
+import colorama
 from termcolor import colored
 
-init()
+colorama.init()
 
 print(colored('Hello, World!', 'green'))
 

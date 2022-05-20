@@ -1,6 +1,17 @@
 import os
-import numpy as np
 from tabulate import tabulate
+import colorama
+from termcolor import colored
+
+colorama.init()
+
+# TO DO
+# Write "rules" for the game (ex: age of players)
+
+idadeMin = 10
+idadeMax = 35
+jogMin = 5
+jogMax = 11
 
 equipas = []
 numJogadoresEquipa = []
@@ -20,11 +31,46 @@ equipaVencedora = " "
 maxValuePos = 0
 pontos = []
 
-def printJogadores():
-    infoJogadoresEquipa = [[]]
+def temNumeros(inputString):
+    return any(char.isdigit() for char in inputString)
 
-    for i in range(0, len(jogadores)):
-        infoJogadoresEquipa[0].append(jogadores[i])
+def printEquipas():
+    infoJogadores = []
+
+    for i in range(0, numEquipas):
+        infoJogadores.append([])
+        for j in range(0, max(numJogadoresEquipa) + 1):
+            infoJogadores[i].append(0)
+
+    for i in range(0, numEquipas):
+        if (i == 0):
+            aux = 0
+        else:
+            aux += numJogadoresEquipa[i - 1]
+        
+        for j in range(0, max(numJogadoresEquipa) + 1):
+            if (j == 0):
+                infoJogadores[i][j] = equipas[i]
+            else:
+                if ((j - 1) < numJogadoresEquipa[i]):
+                    infoJogadores[i][j] = jogadores[(j - 1) + aux]               
+
+    print(tabulate(infoJogadores, tablefmt="grid"))
+
+def printJogadores(_equipa):
+    infoJogadoresEquipa = [[equipas[_equipa - 1]]]
+
+    aux = 0
+    aux2 = 0
+    for i in range(0, numEquipas):
+        aux += numJogadoresEquipa[i]
+        if (i > 0):
+            aux2 += numJogadoresEquipa[i - 1]
+
+        if (i == (_equipa - 1)):
+            for j in range(0, len(jogadores)):
+                if (j >= aux2 and j < aux):
+                    infoJogadoresEquipa[0].append(jogadores[j])
 
     print(tabulate(infoJogadoresEquipa, tablefmt="grid"))
 
@@ -55,8 +101,25 @@ def writeInFile():
     ficheiro.close()
 
 def addJogador():
-    jogadorGerir = str(input("Qual o nome do jogador que deseja adicionar: "))
-    jogadorIdade = int(input("Qual a idade do jogador: "))
+
+    while True:
+        jogadorGerir = str(input("Qual o nome do jogador que deseja adicionar: "))
+        if (temNumeros(jogadorGerir) == False):
+            break
+        else:
+            print(colored("Nome do jogador inválido!", "red"))
+        
+    while True:
+        try:
+            jogadorIdade = int(input("Qual a idade do jogador: "))
+        except(ValueError):
+            print(colored("Idade do jogador inválida!", "red"))
+        else:
+            if (jogadorIdade >= idadeMin and jogadorIdade <= idadeMax):
+                break
+            else:
+                print(colored("Idade do jogador inválida!", "red"))
+
 
     for i in range(0, numEquipas):
         if (i == 0):
@@ -69,6 +132,7 @@ def addJogador():
             idade.insert(num, jogadorIdade)
             numJogadoresEquipa[equipaGerir - 1] += 1
 
+# Better remove player system
 def removeJogador():
     while True:
         jogadorGerir = str(input("Qual o nome do jogador que deseja remover: "))
@@ -103,20 +167,40 @@ if os.stat(file_path).st_size == 0:
     
     # File empty
     while True:
-        numEquipas = int(input("Introduza o número de equipas: "))
-        if (numEquipas >= 3):
-            break;
-        print("O número de equipas tem de ser maior ou igual a 3")
+        try:
+            numEquipas = int(input("Introduza o número de equipas: "))
+        except(ValueError):
+            print(colored("Numero de equipas inválido!", "red"))
+        else:
+            if (numEquipas >= 3):
+                break;
+            else:
+                print("O número de equipas tem de ser maior ou igual a 3")
 
     for _equipa in range(0, numEquipas):
         nomeEquipa = str(input(f"Introduza o nome da equipa {_equipa + 1}: "))
         equipas.append(nomeEquipa)
-        numJogEquipa = int(input("Introduza o número de jogadores da equipa: "))
-        numJogadoresEquipa.append(numJogEquipa)
+        while True:
+            try:
+                numJogEquipa = int(input("Introduza o número de jogadores da equipa: "))
+            except(ValueError):
+                print(colored("Número de jogadores da equipa inválido!", "red"))
+            else:
+                if (numJogEquipa >= jogMin and numJogEquipa <= jogMax):
+                    numJogadoresEquipa.append(numJogEquipa)
+                    break
+                else:
+                    print("O número de jogadores tem de ser entre 5 e 11")
 
     for _equipa in range(0, len(equipas)):
         for _jogador in range(0, numJogadoresEquipa[_equipa]):
-            _nome = str(input(f"Introduza o nome do jogador {_jogador + 1} da equipa {_equipa + 1}: "))
+            while True:
+                _nome = str(input(f"Introduza o nome do jogador {_jogador + 1} da equipa {_equipa + 1}: "))
+                if (temNumeros(_nome) == False):
+                    break
+                else:
+                    print(colored("Nome do jogador inválido!", "red"))
+            
             #_idade = int(input("Introduza a idade do jogador: "))
             #_posicao = str(input("Introduza a posicao do jogador (suplente ou titular): "))
             _idade = 1
@@ -166,43 +250,52 @@ print(idade)
 print(posicao)
 
 while True:
-    print(" ----- M E N U ----- ")
+    print(colored(" ----- M E N U ----- ", "green"))
     print(" 1 -> Gerir Equipas ")
     print(" 2 -> Gerir Jogos e Classificações ")
     print(" 3 -> Sair ")
-    opcaoMenu1 = int(input("Introduza uma opção: "))
+
+    while True:
+        try:
+            opcaoMenu1 = int(input("Introduza uma opção: "))
+        except(ValueError):
+            print(colored("Opção inválida", "red"))
+        else:
+            if (opcaoMenu1 >= 1 and opcaoMenu1 <= 3):
+                break;
+            else:
+                print(colored("Opção inválida!", "red"))
 
     if opcaoMenu1 == 1:
         
-        infoJogadores = []
-
-        for i in range(0, numEquipas):
-            infoJogadores.append([])
-            for j in range(0, max(numJogadoresEquipa) + 1):
-                infoJogadores[i].append(0)
-
-        for i in range(0, numEquipas):
-            if (i == 0):
-                aux = 0
-            else:
-                aux += numJogadoresEquipa[i - 1]
-            
-            for j in range(0, max(numJogadoresEquipa) + 1):
-                if (j == 0):
-                    infoJogadores[i][j] = equipas[i]
-                else:
-                    if ((j - 1) < numJogadoresEquipa[i]):
-                        infoJogadores[i][j] = jogadores[(j - 1) + aux]               
-
-        print(tabulate(infoJogadores, tablefmt="grid"))
+        printEquipas()
 
         print(equipas)
-        equipaGerir = int(input("Introduza qual o número da equipa que quer editar: "))
+        
+        while True:
+            try:
+                equipaGerir = int(input("Introduza qual o número da equipa que quer editar: "))
+            except(ValueError):
+                print(colored("Número da equipa inválido!", "red"))
+            else:
+                if (equipaGerir > 0 and equipaGerir <= numEquipas):
+                    break;
+                else:
+                    print(colored("Número da equipa inválido!", "red"))
 
-        print(" ----- M E N U ----- ")
+        print(colored(" ----- M E N U ----- ", "green"))
         print(" 1 -> Adicionar jogador")
         print(" 2 -> Remover jogador")
-        opcaoMenu2 = int(input("Introduza uma opção: "))
+        while True:
+            try:
+                opcaoMenu2 = int(input("Introduza uma opção: "))
+            except(ValueError):
+                print(colored("Opção inválida!", "red"))
+            else:
+                if (opcaoMenu2 >= 1 and opcaoMenu2 <= 2):
+                    break;
+                else:
+                    print(colored("Opção inválida!", "red"))
 
         if opcaoMenu2 == 1:
             addJogador()
@@ -211,11 +304,12 @@ while True:
 
         writeInFile()
 
-        printJogadores()
+        #printJogadores(equipaGerir)
+        printEquipas()
     
     elif opcaoMenu1 == 2:
 
-        print("----- J O G O S -----")
+        print(colored(" ----- J O G O S ----- ", "green"))
         for equipa in range(len(equipas) - 1):
             for j in range(equipa + 1, len(equipas)):
                 print(f"{equipas[equipa]} x {equipas[j]}")
@@ -231,9 +325,16 @@ while True:
                 print(f"----- {jogos[i]} x {jogos[i + 1]} ----")
                 jogoAtual += 1
             
-            pontuacao = input(f"Introduza os golos da equipa {jogos[i]} do jogo {jogoAtual}: ")
-            golos.append(int(pontuacao))
-
+            try:
+                pontuacao = input(f"Introduza o número de golos da equipa {jogos[i]} do jogo {jogoAtual}: ")
+            except(ValueError):
+                print(colored("Número de golos inválido!", "red"))
+            else:
+                if (pontuacao >= 0):
+                    golos.append(int(pontuacao))
+                    break
+                else:
+                    print(colored("Número de golos inválido!", "red"))
 
         print(golos)
 
