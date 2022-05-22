@@ -7,6 +7,8 @@ colorama.init()
 
 # TO DO
 # Write "rules" for the game (ex: age of players)
+# Historic of changes
+# Adicionar à tabela final das pontuacoes o Numero de jogos, diferenca de jogos e (ordenar por ???)
 
 idadeMin = 10
 idadeMax = 35
@@ -101,65 +103,75 @@ def writeInFile():
     ficheiro.close()
 
 def addJogador():
-
-    while True:
-        jogadorGerir = str(input("Qual o nome do jogador que deseja adicionar: "))
-        if (temNumeros(jogadorGerir) == False):
-            break
-        else:
-            print(colored("Nome do jogador inválido!", "red"))
-        
-    while True:
-        try:
-            jogadorIdade = int(input("Qual a idade do jogador: "))
-        except(ValueError):
-            print(colored("Idade do jogador inválida!", "red"))
-        else:
-            if (jogadorIdade >= idadeMin and jogadorIdade <= idadeMax):
+    if ((numJogadoresEquipa[equipaGerir - 1]) < jogMax):
+        while True:
+            jogadorGerir = str(input("Qual o nome do jogador que deseja adicionar: "))
+            if (temNumeros(jogadorGerir) == False):
                 break
             else:
+                print(colored("Nome do jogador inválido!", "red"))
+            
+        while True:
+            try:
+                jogadorIdade = int(input("Qual a idade do jogador: "))
+            except(ValueError):
                 print(colored("Idade do jogador inválida!", "red"))
-
-
-    for i in range(0, numEquipas):
-        if (i == 0):
-            num = numJogadoresEquipa[0]
-        else:
-            num += numJogadoresEquipa[i]
-
-        if (i == (equipaGerir - 1)):
-            jogadores.insert(num, jogadorGerir)
-            idade.insert(num, jogadorIdade)
-            numJogadoresEquipa[equipaGerir - 1] += 1
-
-# Better remove player system
-def removeJogador():
-    while True:
-        jogadorGerir = str(input("Qual o nome do jogador que deseja remover: "))
-        if (jogadores.count(jogadorGerir) >= 1):
-            break
-        else:
-            print("Introduza um nome válido!")
-
-    numMax = 0
-    numMin = 0
-
-    index = jogadores.index(jogadorGerir)
-
-    for i in range(0, numEquipas):
-        numMax += numJogadoresEquipa[i]
-
-        #print(numMax)
-
-        if (i == (equipaGerir - 1)):
-            #print(f"debug: {i} / {index} / {numMax - 1} / {numMin - 1}")
-            if (index >= (numMin - 1) and index <= (numMax - 1)):
-                jogadores.pop(index)
-                numJogadoresEquipa[equipaGerir - 1] -= 1
             else:
-                print(f"Esse jogador nao esta na equipa {equipaGerir}")
+                if (jogadorIdade >= idadeMin and jogadorIdade <= idadeMax):
+                    break
+                else:
+                    print(colored("Idade do jogador inválida!", "red"))
 
-        numMin += numJogadoresEquipa[i]
+
+        for i in range(0, numEquipas):
+            if (i == 0):
+                num = numJogadoresEquipa[0]
+            else:
+                num += numJogadoresEquipa[i]
+
+            if (i == (equipaGerir - 1)):
+                jogadores.insert(num, jogadorGerir)
+                idade.insert(num, jogadorIdade)
+                numJogadoresEquipa[equipaGerir - 1] += 1
+
+        printJogadores(equipaGerir)
+        #printEquipas()
+    else:
+        print(colored("Limite máximo de jogadores 11", "red"))
+
+def removeJogador():
+    if ((numJogadoresEquipa[equipaGerir - 1] - 1) >= jogMin):
+        while True:
+            jogadorGerir = str(input("Qual o nome do jogador que deseja remover: "))
+            if (jogadores.count(jogadorGerir) >= 1):
+                break
+            else:
+                print(colored("Introduza um nome válido!", "red"))
+
+        numMax = 0
+        numMin = 0
+
+        index = jogadores.index(jogadorGerir)
+
+        for i in range(0, numEquipas):
+            numMax += numJogadoresEquipa[i]
+
+            #print(numMax)
+
+            if (i == (equipaGerir - 1)):
+                #print(f"debug: {i} / {index} / {numMax - 1} / {numMin - 1}")
+                if (index >= (numMin - 1) and index <= (numMax - 1)):
+                    jogadores.pop(index)
+                    numJogadoresEquipa[equipaGerir - 1] -= 1
+                else:
+                    print(f"Esse jogador nao esta na equipa {equipaGerir}")
+
+            numMin += numJogadoresEquipa[i]
+
+        printJogadores(equipaGerir)
+        #printEquipas()
+    else:
+        print(colored("Limite mínimo de jogadores 5", "red"))
 
 file_path = "jogadores.txt"
 
@@ -190,7 +202,7 @@ if os.stat(file_path).st_size == 0:
                     numJogadoresEquipa.append(numJogEquipa)
                     break
                 else:
-                    print("O número de jogadores tem de ser entre 5 e 11")
+                    print(colored("O número de jogadores tem de ser entre 5 e 11", "red"))
 
     for _equipa in range(0, len(equipas)):
         for _jogador in range(0, numJogadoresEquipa[_equipa]):
@@ -254,6 +266,7 @@ while True:
     print(" 1 -> Gerir Equipas ")
     print(" 2 -> Gerir Jogos e Classificações ")
     print(" 3 -> Sair ")
+    print(colored(" ------------------- ", "green"))
 
     while True:
         try:
@@ -286,6 +299,8 @@ while True:
         print(colored(" ----- M E N U ----- ", "green"))
         print(" 1 -> Adicionar jogador")
         print(" 2 -> Remover jogador")
+        print(colored(" ------------------- ", "green"))
+
         while True:
             try:
                 opcaoMenu2 = int(input("Introduza uma opção: "))
@@ -303,9 +318,6 @@ while True:
             removeJogador()
 
         writeInFile()
-
-        #printJogadores(equipaGerir)
-        printEquipas()
     
     elif opcaoMenu1 == 2:
 
@@ -317,7 +329,7 @@ while True:
                 jogos.append(equipas[j])
                 numJogos += 1
 
-        print(jogos)
+        print(colored(" ------------------- ", "green"))
 
         jogoAtual = 0
         for i in range(0, len(jogos)):
@@ -368,9 +380,7 @@ while True:
                 golosSofridos[equipas.index(jogos[i])] += golos[i + 1]
             else:
                 golosSofridos[equipas.index(jogos[i])] += golos[i - 1]
-
-        #print(equipasWin)
-        #print(equipasEmpate)
+        
 
         for i in range(0, len(equipasWin)):
             #print(equipas.index(equipasWin[i]))
