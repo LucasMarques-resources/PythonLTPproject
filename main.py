@@ -1,14 +1,16 @@
 import os
 from tabulate import tabulate
-import colorama
-from termcolor import colored
-
-colorama.init()
+import colored
+from colored import stylize
 
 # TO DO
 # Write "rules" for the game (ex: age of players)
 # Historic of changes
-# Adicionar à tabela final das pontuacoes o Numero de jogos, diferenca de jogos e (ordenar por ???)
+# Resetar variaveis e listas "na proxima vez" a correr
+
+# Variables
+programON = True
+equipasJaJogaram = False
 
 idadeMin = 10
 idadeMax = 35
@@ -26,6 +28,7 @@ numJogos = 0
 golos = []
 golosEquipas = []
 golosSofridos = []
+numJogosEquipas = []
 jogos = []
 equipasWin = []
 equipasEmpate = []
@@ -109,18 +112,18 @@ def addJogador():
             if (temNumeros(jogadorGerir) == False):
                 break
             else:
-                print(colored("Nome do jogador inválido!", "red"))
+                print(stylize("Nome do jogador inválido", colored.fg(colored.fg("red"))))
             
         while True:
             try:
                 jogadorIdade = int(input("Qual a idade do jogador: "))
             except(ValueError):
-                print(colored("Idade do jogador inválida!", "red"))
+                print(stylize("Idade do jogador inválida", colored.fg("red")))
             else:
                 if (jogadorIdade >= idadeMin and jogadorIdade <= idadeMax):
                     break
                 else:
-                    print(colored("Idade do jogador inválida!", "red"))
+                    print(stylize("Idade do jogador inválida", colored.fg("red")))
 
 
         for i in range(0, numEquipas):
@@ -137,7 +140,7 @@ def addJogador():
         printJogadores(equipaGerir)
         #printEquipas()
     else:
-        print(colored("Limite máximo de jogadores 11", "red"))
+        print(stylize("Limite máximo de jogadores 11", colored.fg("red")))
 
 def removeJogador():
     if ((numJogadoresEquipa[equipaGerir - 1] - 1) >= jogMin):
@@ -146,7 +149,7 @@ def removeJogador():
             if (jogadores.count(jogadorGerir) >= 1):
                 break
             else:
-                print(colored("Introduza um nome válido!", "red"))
+                print(stylize("Introduza um nome válido", colored.fg("red")))
 
         numMax = 0
         numMin = 0
@@ -171,18 +174,21 @@ def removeJogador():
         printJogadores(equipaGerir)
         #printEquipas()
     else:
-        print(colored("Limite mínimo de jogadores 5", "red"))
+        print(stylize("Limite mínimo de jogadores 5", colored.fg("red")))
+
+def printLeaderboard():
+    head = ["Equipa", "Golos", "Golos sofridos", "Número de jogos", "Diferenca de golos", "Pontuação"]
+    print(tabulate(info, headers=head, tablefmt="grid"))
 
 file_path = "jogadores.txt"
 
+# If file is empty
 if os.stat(file_path).st_size == 0:
-    
-    # File empty
     while True:
         try:
             numEquipas = int(input("Introduza o número de equipas: "))
         except(ValueError):
-            print(colored("Numero de equipas inválido!", "red"))
+            print(stylize("Numero de equipas inválido", colored.fg("red")))
         else:
             if (numEquipas >= 3):
                 break;
@@ -196,13 +202,13 @@ if os.stat(file_path).st_size == 0:
             try:
                 numJogEquipa = int(input("Introduza o número de jogadores da equipa: "))
             except(ValueError):
-                print(colored("Número de jogadores da equipa inválido!", "red"))
+                print(stylize("Número de jogadores da equipa inválido", colored.fg("red")))
             else:
                 if (numJogEquipa >= jogMin and numJogEquipa <= jogMax):
                     numJogadoresEquipa.append(numJogEquipa)
                     break
                 else:
-                    print(colored("O número de jogadores tem de ser entre 5 e 11", "red"))
+                    print(stylize("O número de jogadores tem de ser entre 5 e 11", colored.fg("red")))
 
     for _equipa in range(0, len(equipas)):
         for _jogador in range(0, numJogadoresEquipa[_equipa]):
@@ -211,7 +217,7 @@ if os.stat(file_path).st_size == 0:
                 if (temNumeros(_nome) == False):
                     break
                 else:
-                    print(colored("Nome do jogador inválido!", "red"))
+                    print(stylize("Nome do jogador inválido", colored.fg("red")))
             
             #_idade = int(input("Introduza a idade do jogador: "))
             #_posicao = str(input("Introduza a posicao do jogador (suplente ou titular): "))
@@ -223,7 +229,7 @@ if os.stat(file_path).st_size == 0:
 
     writeInFile()
 
-# Read file info
+# If file is not empty read file info
 else:
 
     ficheiro = open(file_path, "r")
@@ -254,194 +260,259 @@ else:
 
     ficheiro.close()
 
-print(equipas)
+# Debug
+'''print(equipas)
 print(numEquipas)
 print(numJogadoresEquipa)
 print(jogadores)
 print(idade)
-print(posicao)
+print(posicao)'''
 
-while True:
-    print(colored(" ----- M E N U ----- ", "green"))
-    print(" 1 -> Gerir Equipas ")
-    print(" 2 -> Gerir Jogos e Classificações ")
-    print(" 3 -> Sair ")
-    print(colored(" ------------------- ", "green"))
-
+while programON:
     while True:
-        try:
-            opcaoMenu1 = int(input("Introduza uma opção: "))
-        except(ValueError):
-            print(colored("Opção inválida", "red"))
-        else:
-            if (opcaoMenu1 >= 1 and opcaoMenu1 <= 3):
-                break;
-            else:
-                print(colored("Opção inválida!", "red"))
+        print(stylize(" ----- M E N U ----- ", colored.fg("green")))
+        print(" 1 -> Gerir Equipas ")
+        print(" 2 -> Gerir Jogos e Classificações ")
+        print(" 3 -> Sair ")
+        print(stylize(" ------------------- ", colored.fg("green")))
 
-    if opcaoMenu1 == 1:
-        
-        printEquipas()
-
-        print(equipas)
-        
+        # Menu 1 options
         while True:
             try:
-                equipaGerir = int(input("Introduza qual o número da equipa que quer editar: "))
+                opcaoMenu1 = int(input("Introduza uma opção: "))
             except(ValueError):
-                print(colored("Número da equipa inválido!", "red"))
+                print(stylize("Opção inválida", colored.fg("red")))
             else:
-                if (equipaGerir > 0 and equipaGerir <= numEquipas):
+                if (opcaoMenu1 >= 1 and opcaoMenu1 <= 3):
                     break;
                 else:
-                    print(colored("Número da equipa inválido!", "red"))
+                    print(stylize("Opção inválida", colored.fg("red")))
 
-        print(colored(" ----- M E N U ----- ", "green"))
-        print(" 1 -> Adicionar jogador")
-        print(" 2 -> Remover jogador")
-        print(colored(" ------------------- ", "green"))
-
-        while True:
-            try:
-                opcaoMenu2 = int(input("Introduza uma opção: "))
-            except(ValueError):
-                print(colored("Opção inválida!", "red"))
-            else:
-                if (opcaoMenu2 >= 1 and opcaoMenu2 <= 2):
-                    break;
-                else:
-                    print(colored("Opção inválida!", "red"))
-
-        if opcaoMenu2 == 1:
-            addJogador()
-        elif opcaoMenu2 == 2:
-            removeJogador()
-
-        writeInFile()
-    
-    elif opcaoMenu1 == 2:
-
-        print(colored(" ----- J O G O S ----- ", "green"))
-        for equipa in range(len(equipas) - 1):
-            for j in range(equipa + 1, len(equipas)):
-                print(f"{equipas[equipa]} x {equipas[j]}")
-                jogos.append(equipas[equipa])
-                jogos.append(equipas[j])
-                numJogos += 1
-
-        print(colored(" ------------------- ", "green"))
-
-        jogoAtual = 0
-        for i in range(0, len(jogos)):
-            if i % 2 == 0:
-                print(f"----- {jogos[i]} x {jogos[i + 1]} ----")
-                jogoAtual += 1
+        # Manage teams
+        if opcaoMenu1 == 1:
             
-            try:
-                pontuacao = input(f"Introduza o número de golos da equipa {jogos[i]} do jogo {jogoAtual}: ")
-            except(ValueError):
-                print(colored("Número de golos inválido!", "red"))
-            else:
-                if (pontuacao >= 0):
-                    golos.append(int(pontuacao))
-                    break
+            # Print teams
+            printEquipas()
+
+            print(equipas)
+            
+            # What team to manage
+            while True:
+                try:
+                    equipaGerir = int(input("Introduza qual o número da equipa que quer editar: "))
+                except(ValueError):
+                    print(stylize("Número da equipa inválido", colored.fg("red")))
                 else:
-                    print(colored("Número de golos inválido!", "red"))
+                    if (equipaGerir > 0 and equipaGerir <= numEquipas):
+                        break;
+                    else:
+                        print(stylize("Número da equipa inválido", colored.fg("red")))
 
-        print(golos)
+            print(stylize(" ----- M E N U ----- ", colored.fg("green")))
+            print(" 1 -> Adicionar jogador")
+            print(" 2 -> Remover jogador")
+            print(" 3 -> Voltar")
+            print(stylize(" ------------------- ", colored.fg("green")))
 
-        for i in range(0, numEquipas):
-            pontos.append(0)
-            golosEquipas.append(0)
-            golosSofridos.append(0)
-            for j in range(0, len(golos)):
-                if (equipas[i] == jogos[j]):
-                    golosEquipas[i] += golos[j]
+            # Menu 2 options
+            while True:
+                try:
+                    opcaoMenu2 = int(input("Introduza uma opção: "))
+                except(ValueError):
+                    print(stylize("Opção inválida", colored.fg("red")))
+                else:
+                    if (opcaoMenu2 >= 1 and opcaoMenu2 <= 3):
+                        break;
+                    else:
+                        print(stylize("Opção inválida", colored.fg("red")))
 
-        print(f"Golos por equipa: {golosEquipas}")
-
-        for i in range(0, len(golos)):
-            if i % 2 == 0:
-                #print(golos[i])
-                #print(golos[i + 1])
-                maxValue = max(golos[i], golos[i + 1])
-
-                if (maxValue == golos[i]):
-                    maxValuePos = i
-                elif (maxValue == golos[i + 1]):
-                    maxValuePos = i + 1
-
-                if (golos[i] == golos[i + 1]):
-                    equipasEmpate.append(jogos[i])
-                    equipasEmpate.append(jogos[i + 1])
-                else: 
-                    equipasWin.append(jogos[maxValuePos])
-
-                golosSofridos[equipas.index(jogos[i])] += golos[i + 1]
-            else:
-                golosSofridos[equipas.index(jogos[i])] += golos[i - 1]
+            # Add player
+            if opcaoMenu2 == 1:
+                addJogador()
+            # Remove player
+            elif opcaoMenu2 == 2:
+                removeJogador()
+            # Go back to menu 1
+            elif opcaoMenu2 == 3:
+                break
+            
+            # Save new info in file
+            writeInFile()
         
+        # Manage games and leaderboards
+        elif (opcaoMenu1 == 2):
+            
+            while True:
+                print(stylize(" ----- M E N U ----- ", colored.fg("green")))
+                print(" 1 -> Gerir jogos")
+                print(" 2 -> Deletar jogos")
+                print(" 3 -> Voltar")
+                print(stylize(" ------------------- ", colored.fg("green")))
 
-        for i in range(0, len(equipasWin)):
-            #print(equipas.index(equipasWin[i]))
-            pontos[equipas.index(equipasWin[i])] += 3
+                # Menu 3 options
+                while True:
+                    try:
+                        opcaoMenu3 = int(input("Introduza uma opção: "))
+                    except(ValueError):
+                        print(stylize("Opção inválida", colored.fg("red")))
+                    else:
+                        if (opcaoMenu3 >= 1 and opcaoMenu3 <= 3):
+                            break;
+                        else:
+                            print(stylize("Opção inválida", colored.fg("red")))
 
-        for i in range(0, len(equipasEmpate)):
-            pontos[equipas.index(equipasEmpate[i])] += 1
+                if (opcaoMenu3 == 1) and (equipasJaJogaram == False):
+                    # Print the games
+                    print(stylize(" ----- J O G O S ----- ", colored.fg("green")))
+                    for equipa in range(len(equipas) - 1):
+                        for j in range(equipa + 1, len(equipas)):
+                            print(f"{equipas[equipa]} x {equipas[j]}")
+                            jogos.append(equipas[equipa])
+                            jogos.append(equipas[j])
+                            numJogos += 1
+                    print(stylize(" ------------------- ", colored.fg("green")))
 
-        info = []
+                    for i in range(0, len(jogos)):
+                        if i % 2 == 0:
+                            print(stylize(f"----- {jogos[i]} x {jogos[i + 1]} ----", colored.fg("light_magenta")))
 
-        for i in range(0, numEquipas):
-            info.append([])
-            for j in range(0, 4):
-                info[i].append(0)
-                
-        for i in range(0, numEquipas):
-            for j in range(0, 4):
-                if (j == 0):
-                    info[i][j] = equipas[i]
-                elif (j == 1):
-                    info[i][j] = golosEquipas[i]
-                elif (j == 2):
-                    info[i][j] = golosSofridos[i]
-                elif (j == 3):
-                    info[i][j] = pontos[i]
+                        # Ask for the goals
+                        while True:
+                            try:
+                                golosInput = int(input(f"Introduza número de golos da equipa {jogos[i]}: "))
+                            except(ValueError):
+                                print(stylize("Número de golos inválido", colored.fg("red")))
+                            else:
+                                if (golosInput >= 0):
+                                    golos.append(golosInput)
+                                    break
+                                else:
+                                    print(stylize("Número de golos inválido", colored.fg("red")))
 
+                    for i in range(0, numEquipas):
+                        pontos.append(0)
+                        golosEquipas.append(0)
+                        golosSofridos.append(0)
+                        numJogosEquipas.append(0)
+                        for j in range(0, len(golos)):
+                            if (equipas[i] == jogos[j]):
+                                golosEquipas[i] += golos[j]
 
-        head = ["Equipa", "Golos", "Golos sofridos", "Pontuação"]
-        print(tabulate(info, headers=head, tablefmt="grid"))
+                    for i in range(0, len(golos)):
+                        if i % 2 == 0:
+                            #print(golos[i])
+                            #print(golos[i + 1])
+                            maxValue = max(golos[i], golos[i + 1])
 
-        #for i in range(0, numEquipas):
-        maxPontos = max(pontos)
-        maxPontosPos = pontos.index(maxPontos)
-        equipaMaxPontos = equipas[maxPontosPos]
+                            if (maxValue == golos[i]):
+                                maxValuePos = i
+                            elif (maxValue == golos[i + 1]):
+                                maxValuePos = i + 1
 
-        equipaEmpate = []
-        diferencaEmpate = []
+                            if (golos[i] == golos[i + 1]):
+                                equipasEmpate.append(jogos[i])
+                                equipasEmpate.append(jogos[i + 1])
+                            else: 
+                                equipasWin.append(jogos[maxValuePos])
 
-        for i in range(0, numEquipas):
-            if (pontos[i] == maxPontos):
-                equipaEmpate.append(equipas[i])
-            else:
-                equipaEmpate.append(" ")
+                            golosSofridos[equipas.index(jogos[i])] += golos[i + 1]
+                        else:
+                            golosSofridos[equipas.index(jogos[i])] += golos[i - 1]
+                    
 
-        #print(equipaEmpate)
+                    for i in range(0, len(equipasWin)):
+                        #print(equipas.index(equipasWin[i]))
+                        pontos[equipas.index(equipasWin[i])] += 3
 
-        for i in range(0, numEquipas):
-            if (equipaEmpate[i] == equipas[i]):
-                diferencaEmpate.append(golosEquipas[i] - golosSofridos[i])
-            else:
-                diferencaEmpate.append(-9999)
+                    for i in range(0, len(equipasEmpate)):
+                        pontos[equipas.index(equipasEmpate[i])] += 1
 
-        #print(diferencaEmpate)
+                    # Number of games of each team
+                    for i in range(0, numEquipas):
+                        aux = jogos.count(equipas[i])
+                        numJogosEquipas[i] = aux
 
-        minDifEmpate = max(diferencaEmpate)
-        for i in range(0, len(diferencaEmpate)):
-            if diferencaEmpate.count(minDifEmpate) > 1:
-                equipaVencedora = "Nao há vencedor"
-            else:
-                equipaVencedora = f"Equipa vencedor: {equipaEmpate[diferencaEmpate.index(minDifEmpate)]}"
+                    info = []
 
-        print(equipaVencedora)
-    else:
-        break 
+                    for i in range(0, numEquipas):
+                        info.append([])
+                        for j in range(0, 6):
+                            info[i].append(0)
+
+                    for i in range(0, numEquipas):
+                        for j in range(0, 6):
+                            if (j == 0):
+                                info[i][j] = equipas[i]
+                            elif (j == 1):
+                                info[i][j] = golosEquipas[i]
+                            elif (j == 2):
+                                info[i][j] = golosSofridos[i]
+                            elif (j == 3):
+                                info[i][j] = numJogosEquipas[i]
+                            elif (j == 4):
+                                info[i][j] = golosEquipas[i]-golosSofridos[i]
+                            elif (j == 5):
+                                info[i][j] = pontos[i]
+
+                    # Print info
+                    printLeaderboard()
+
+                    maxPontos = max(pontos)
+                    maxPontosPos = pontos.index(maxPontos)
+                    equipaMaxPontos = equipas[maxPontosPos]
+
+                    equipaEmpate = []
+                    diferencaEmpate = []
+
+                    for i in range(0, numEquipas):
+                        if (pontos[i] == maxPontos):
+                            equipaEmpate.append(equipas[i])
+                        else:
+                            equipaEmpate.append(" ")
+
+                    for i in range(0, numEquipas):
+                        if (equipaEmpate[i] == equipas[i]):
+                            diferencaEmpate.append(golosEquipas[i] - golosSofridos[i])
+                        else:
+                            diferencaEmpate.append(-9999)
+
+                    minDifEmpate = max(diferencaEmpate)
+                    for i in range(0, len(diferencaEmpate)):
+                        if diferencaEmpate.count(minDifEmpate) > 1:
+                            equipaVencedora = "Nao há vencedor"
+                        else:
+                            equipaVencedora = f"Equipa vencedora: {equipaEmpate[diferencaEmpate.index(minDifEmpate)]}"
+
+                    equipasJaJogaram = True
+
+                    print(stylize(equipaVencedora, colored.fg("green")))
+
+                # Reset leaderboard
+                elif (opcaoMenu3 == 2):
+                    jogos = []
+                    golos = []
+                    golosEquipas = []
+                    golosSofridos = []
+                    numJogosEquipas = []
+                    equipasEmpate = []
+                    equipasWin = []
+                    pontos = []
+                    equipasJaJogaram = False
+                    print(stylize("Informações dos jogos eleminadas", colored.fg("red")))
+
+                # Go back
+                elif (opcaoMenu3 == 3):
+                    break
+
+                # The teams already played
+                else:
+                    print(stylize("As equipas já jogaram", colored.fg("red")))
+
+                    # Print leaderboard
+                    printLeaderboard()
+
+        # Close program
+        else:
+            programON = False
+            print(stylize("Programa encerrado", colored.fg("red")))
+            break
