@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 import os
 from tabulate import tabulate
 import colored
