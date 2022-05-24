@@ -4,16 +4,14 @@ import colored
 from colored import stylize
 
 # TO DO
-# Write "rules" for the game (ex: age of players)
 # Historic of changes
-# Resetar variaveis e listas "na proxima vez" a correr
 
 # Variables
 programON = True
 equipasJaJogaram = False
 
 idadeMin = 10
-idadeMax = 35
+idadeMax = 18
 jogMin = 5
 jogMax = 11
 
@@ -35,6 +33,12 @@ equipasEmpate = []
 equipaVencedora = " "
 maxValuePos = 0
 pontos = []
+
+regras = {
+  "Idade": f"Mínima: {idadeMin} Máxima: {idadeMax}",
+  "Jogadores": "Mínimo: 5 Máximo: 11",
+  "Equipas": "Mínimo: 3"
+}
 
 def temNumeros(inputString):
     return any(char.isdigit() for char in inputString)
@@ -273,7 +277,8 @@ while programON:
         print(stylize(" ----- M E N U ----- ", colored.fg("green")))
         print(" 1 -> Gerir Equipas ")
         print(" 2 -> Gerir Jogos e Classificações ")
-        print(" 3 -> Sair ")
+        print(" 3 -> Regras ")
+        print(" 4 -> Sair ")
         print(stylize(" ------------------- ", colored.fg("green")))
 
         # Menu 1 options
@@ -283,7 +288,7 @@ while programON:
             except(ValueError):
                 print(stylize("Opção inválida", colored.fg("red")))
             else:
-                if (opcaoMenu1 >= 1 and opcaoMenu1 <= 3):
+                if (opcaoMenu1 >= 1 and opcaoMenu1 <= 4):
                     break;
                 else:
                     print(stylize("Opção inválida", colored.fg("red")))
@@ -418,12 +423,13 @@ while programON:
                             golosSofridos[equipas.index(jogos[i])] += golos[i + 1]
                         else:
                             golosSofridos[equipas.index(jogos[i])] += golos[i - 1]
-                    
 
+                    # Add 3 points
                     for i in range(0, len(equipasWin)):
                         #print(equipas.index(equipasWin[i]))
                         pontos[equipas.index(equipasWin[i])] += 3
 
+                    # Add 1 point
                     for i in range(0, len(equipasEmpate)):
                         pontos[equipas.index(equipasEmpate[i])] += 1
 
@@ -510,6 +516,12 @@ while programON:
 
                     # Print leaderboard
                     printLeaderboard()
+        elif (opcaoMenu1 == 3):
+            print(stylize(" ------------------- ", colored.fg("red")))
+            print(f"Idades dos jogadores -> {regras['Idade']}")
+            print(f"Número de jogadores  -> {regras['Jogadores']}")
+            print(f"Número de equipas    -> {regras['Equipas']}")
+            print(stylize(" ------------------- ", colored.fg("red")))
 
         # Close program
         else:
