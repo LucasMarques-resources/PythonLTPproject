@@ -183,6 +183,38 @@ def printLeaderboard():
     head = ["Equipa", "Golos", "Golos sofridos", "Número de jogos", "Diferenca de golos", "Pontuação"]
     print(tabulate(info, headers=head, tablefmt="grid"))
 
+# If file is not empty
+if os.stat(file_path).st_size != 0:
+    ficheiro = open(file_path, "r")
+
+    # Read number of teams
+    numEquipas = int(ficheiro.readline())
+
+    # Read number of players in each team 
+    texto = ficheiro.readline()
+    textoSplit = texto.split()
+
+    for i in range(0, len(textoSplit)):
+        numJogadoresEquipa.append(int(textoSplit[i]))
+
+    # Read teams
+    texto = ficheiro.readline()
+    textoSplit = texto.split()
+
+    for i in range(0, len(textoSplit)):
+        equipas.append(textoSplit[i])
+
+    # Read players
+    texto = ficheiro.readline()
+    textoSplit = texto.split()
+
+    for i in range(0, len(textoSplit)):
+        jogadores.append(textoSplit[i])
+
+    informacaoInserida = True
+    readFileInfo = False
+
+    ficheiro.close()
 
 while programON:
     while True:
@@ -270,39 +302,6 @@ while programON:
                 informacaoInserida = True
 
                 writeInFile()
-
-            # If file is not empty read file info
-            elif (readFileInfo):
-                ficheiro = open(file_path, "r")
-
-                # Read number of teams
-                numEquipas = int(ficheiro.readline())
-
-                # Read number of players in each team 
-                texto = ficheiro.readline()
-                textoSplit = texto.split()
-
-                for i in range(0, len(textoSplit)):
-                    numJogadoresEquipa.append(int(textoSplit[i]))
-
-                # Read teams
-                texto = ficheiro.readline()
-                textoSplit = texto.split()
-
-                for i in range(0, len(textoSplit)):
-                    equipas.append(textoSplit[i])
-
-                # Read players
-                texto = ficheiro.readline()
-                textoSplit = texto.split()
-
-                for i in range(0, len(textoSplit)):
-                    jogadores.append(textoSplit[i])
-
-                informacaoInserida = True
-                readFileInfo = False
-
-                ficheiro.close()
 
             # Print teams
             printEquipas()
