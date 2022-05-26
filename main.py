@@ -38,7 +38,7 @@ informacaoInserida = False
 regras = {
   "Idade": f"Mínima: {idadeMin} Máxima: {idadeMax}",
   "Jogadores": "Mínimo: 5 Máximo: 11",
-  "Equipas": "Mínimo: 3"
+  "Equipas": "Mínimo: 3 Máximo: 11"
 }
 
 def temNumeros(inputString):
@@ -248,10 +248,10 @@ while programON:
                     except(ValueError):
                         print(stylize("Numero de equipas inválido", colored.fg("red")))
                     else:
-                        if (numEquipas >= 3):
+                        if (numEquipas >= 3 and numEquipas <= 11):
                             break;
                         else:
-                            print("O número de equipas tem de ser maior ou igual a 3")
+                            print(stylize("O número de equipas tem de ser entre 3 e 11", colored.fg("red")))
 
                 for _equipa in range(0, numEquipas):
                     nomeEquipa = str(input(f"Introduza o nome da equipa {_equipa + 1}: "))
