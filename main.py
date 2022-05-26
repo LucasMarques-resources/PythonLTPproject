@@ -180,7 +180,7 @@ def removeJogador():
         print(stylize("Limite mínimo de jogadores 5", colored.fg("red")))
 
 def printLeaderboard():
-    head = ["Equipa", "Golos", "Golos sofridos", "Número de jogos", "Diferenca de golos", "Pontuação"]
+    head = ["Equipa", "Golos", "Golos sofridos", "Número de jogos", "Diferença de golos", "Pontuação"]
     print(tabulate(info, headers=head, tablefmt="grid"))
 
 # If file is not empty
@@ -352,7 +352,7 @@ while programON:
                 while True:
                     print(stylize(" ----- M E N U ----- ", colored.fg("green")))
                     print(" 1 -> Gerir jogos")
-                    print(" 2 -> Deletar jogos")
+                    print(" 2 -> Apagar jogos")
                     print(" 3 -> Voltar")
                     print(stylize(" ------------------- ", colored.fg("green")))
 
@@ -518,6 +518,8 @@ while programON:
                         printLeaderboard()
 
                         print(stylize("As equipas já jogaram", colored.fg("red")))
+
+                        print(stylize(equipaVencedora, colored.fg("green")))
             else:
                 print(stylize("As equipas ainda nao foram criadas", colored.fg("red")))
                 

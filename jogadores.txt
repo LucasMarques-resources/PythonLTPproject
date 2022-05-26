@@ -1,4 +1,4 @@
 3
-5 5 5 
-Benfica Porto Sporting
-jogadorA jogadorB jogadorC jogadorD jogadorE jogadorF jogadorG jogadorH jogadorJ jogadorK jogadorL jogadorM jogadorN jogadorO jogadorLOL
+5 5 6 
+Benfica Porto Sporting 
+jogadorA jogadorB jogadorC jogadorD jogadorE jogadorF jogadorG jogadorH jogadorI jogadorJ jogadorK jogadorL jogadorM jogadorN jogadorO jogadorP 
